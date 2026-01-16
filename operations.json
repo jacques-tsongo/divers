@@ -1,0 +1,22 @@
+[
+  { "id": 1, "nom": "Achat marchandises", "champs": ["montant"], "ecritures": [
+    { "compte": "607", "sens": "debit", "source": "montant" },
+    { "compte": "401", "sens": "credit", "source": "montant" }
+  ]},
+  { "id": 2, "nom": "Vente marchandises", "champs": ["montant"], "ecritures": [
+    { "compte": "411", "sens": "debit", "source": "montant" },
+    { "compte": "707", "sens": "credit", "source": "montant" }
+  ]},
+  { "id": 3, "nom": "Paiement fournisseur", "champs": ["montant"], "ecritures": [
+    { "compte": "401", "sens": "debit", "source": "montant" },
+    { "compte": "512", "sens": "credit", "source": "montant" }
+  ]},
+  { "id": 4, "nom": "Encaissement client", "champs": ["montant"], "ecritures": [
+    { "compte": "512", "sens": "debit", "source": "montant" },
+    { "compte": "411", "sens": "credit", "source": "montant" }
+  ]},
+  { "id": 5, "nom": "Paiement salaire", "champs": ["montant"], "ecritures": [
+    { "compte": "641", "sens": "debit", "source": "montant" },
+    { "compte": "512", "sens": "credit", "source": "montant" }
+  ]}
+]

@@ -1,0 +1,44 @@
+[
+    {
+        "date": "2026-01-08",
+        "libelle": "Encaissement client",
+        "compte": "512",
+        "debit": 500000.0,
+        "credit": 0
+    },
+    {
+        "date": "2026-01-08",
+        "libelle": "Encaissement client",
+        "compte": "411",
+        "debit": 0,
+        "credit": 500000.0
+    },
+    {
+        "date": "2026-01-08",
+        "libelle": "Vente marchandises",
+        "compte": "411",
+        "debit": 300000.0,
+        "credit": 0
+    },
+    {
+        "date": "2026-01-08",
+        "libelle": "Vente marchandises",
+        "compte": "707",
+        "debit": 0,
+        "credit": 300000.0
+    },
+    {
+        "date": "2026-01-09",
+        "libelle": "Achat marchandises",
+        "compte": "607",
+        "debit": 9900.0,
+        "credit": 0
+    },
+    {
+        "date": "2026-01-09",
+        "libelle": "Achat marchandises",
+        "compte": "401",
+        "debit": 0,
+        "credit": 9900.0
+    }
+]
