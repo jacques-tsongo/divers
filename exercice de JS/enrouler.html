@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neige + Luminosité + Changement de fond</title>
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  font-family: system-ui, sans-serif;
+  color: #222;
+}
+
+/* --- FOND DÉGRADÉ ANIMÉ --- */
+body {
+  background: linear-gradient(180deg, #001829 0%, #00335a 100%);
+  background-size: 200% 200%;
+  animation: skyMove 15s ease-in-out infinite;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: filter 0.3s ease, background 1s ease;
+}
+
+@keyframes skyMove {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+/* --- CANVAS DE NEIGE --- */
+#snow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* --- BLOC DU TEXTE --- */
+.readmore {
+  position: relative;
+  width: 420px;
+  background: rgba(255,255,255,0.9);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+  z-index: 2;
+  overflow: hidden;
+  backdrop-filter: blur(6px);
+}
+
+.content {
+  overflow: hidden;
+  transition: height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.readmore::after {
+  content: "";
+  position: absolute;
+  bottom: 2.5em;
+  left: 0;
+  right: 0;
+  height: 3em;
+  background: linear-gradient(to bottom, rgba(255,255,255,0), #fff 85%);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.readmore.expanded::after { opacity: 0; }
+
+.toggle {
+  display: inline-block;
+  margin-top: 8px;
+  border: none;
+  background: none;
+  color: #1a73e8;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.toggle:hover { color: #0b5ed7; }
+
+/* --- SLIDER DE LUMINOSITÉ --- */
+.brightness-control {
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  background: rgba(255,255,255,0.15);
+  padding: 10px 18px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  z-index: 5;
+  color: white;
+  font-size: 0.9rem;
+  backdrop-filter: blur(6px);
+}
+
+.brightness-control input[type="range"] {
+  width: 120px;
+  accent-color: #1a73e8;
+  cursor: pointer;
+}
+
+/* --- BOUTON DÉPLAÇABLE POUR CHANGER DE FOND --- */
+#move-btn {
+  position: fixed;
+  top: 30px;
+  left: 30px;
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: grab;
+  text-align: center;
+  line-height: 60px;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  backdrop-filter: blur(6px);
+  user-select: none;
+  z-index: 10;
+  transition: transform 0.2s ease;
+}
+#move-btn:active { cursor: grabbing; transform: scale(0.95); }
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  z-index: 20;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* --- NAVIGATION --- */
+nav a {
+  position: relative;
+  text-decoration: none;
+  color: rgba(255,255,255,0.8);
+  font-weight: 500;
+  font-size: 1rem;
+  padding: 10px;
+  transition: color 0.3s ease;
+}
+
+/* Survol */
+nav a:hover {
+  color: #fff;
+}
+
+/* Trait animé sous le lien */
+nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background: #1a73e8;
+  transition: width 0.3s ease;
+}
+nav a:hover::after {
+  width: 100%;
+}
+
+/* --- LIEN ACTIF --- */
+nav a.active {
+  color: #fff;
+  font-weight: 600;
+}
+nav a.active::after {
+  width: 100%;
+  background: #ffd700;
+  box-shadow: 0 0 10px #ffd700;
+}
+
+/* --- PETIT STYLE POUR LE CONTENU EN BAS --- */
+section {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 60px;
+}
+</style>
+</head>
+<body>
+    <header>
+  <nav>
+    <a href="#accueil" class="active">Accueil</a>
+    <a href="#projets">Projets</a>
+    <a href="#a-propos">À propos</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section id="accueil"><h1>🏠 Page d'accueil</h1></section>
+<section id="projets"><h1>💻 Mes projets</h1></section>
+<section id="a-propos"><h1>🙋‍♂️ À propos</h1></section>
+<section id="contact"><h1>📬 Contact</h1></section>
+
+<!-- Canvas neige -->
+<canvas id="snow"></canvas>
+
+<!-- Bloc principal -->
+<div class="readmore">
+  <div class="content">
+    <p>
+      L’hiver arrive avec son manteau blanc. Les flocons dansent dans le vent, se posant délicatement sur les toits et les arbres. 
+      Le silence de la neige enveloppe tout, rendant le monde plus calme et lumineux.
+      <br><br>
+      Chaque flocon est unique, une petite œuvre d’art de glace. La neige transforme les paysages et réveille notre âme d’enfant.
+      <br><br>
+      Profiter de ce moment, c’est goûter à la paix et à la beauté éphémère de la nature.
+    </p>
+  </div>
+  <button class="toggle">Voir plus ▾</button>
+</div>
+
+<!-- Contrôle luminosité -->
+<div class="brightness-control">
+  🌗 Luminosité :
+  <input type="range" id="brightness" min="30" max="120" value="100">
+</div>
+
+<!-- Bouton mobile pour changer le fond -->
+<div id="move-btn">🎨</div>
+
+<script>
+// ---- Effet voir plus / voir moins ----
+const readmore = document.querySelector('.readmore');
+const content = readmore.querySelector('.content');
+const btn = readmore.querySelector('.toggle');
+const collapsedHeight = 100;
+content.style.height = collapsedHeight + 'px';
+
+btn.addEventListener('click', () => {
+  const expanded = readmore.classList.toggle('expanded');
+  btn.textContent = expanded ? 'Voir moins ▴' : 'Voir plus ▾';
+  const start = content.offsetHeight;
+  const end = expanded ? content.scrollHeight : collapsedHeight;
+  content.style.height = start + 'px';
+  requestAnimationFrame(() => (content.style.height = end + 'px'));
+  content.addEventListener('transitionend', function handler() {
+    if (expanded) content.style.height = 'auto';
+    content.removeEventListener('transitionend', handler);
+  });
+});
+
+// ---- Neige réaliste ----
+const canvas = document.getElementById('snow');
+const ctx = canvas.getContext('2d');
+let width = window.innerWidth;
+let height = window.innerHeight;
+canvas.width = width;
+canvas.height = height;
+
+const numFlakes = 200;
+const flakes = [];
+
+for (let i = 0; i < numFlakes; i++) {
+  flakes.push({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    r: Math.random() * 4 + 1,
+    d: Math.random() * 1.5 + 0.5
+  });
+}
+
+let angle = 0;
+function drawSnow() {
+  ctx.clearRect(0, 0, width, height);
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+  ctx.beginPath();
+  for (const f of flakes) {
+    ctx.moveTo(f.x, f.y);
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+  }
+  ctx.fill();
+  moveFlakes();
+}
+
+function moveFlakes() {
+  angle += 0.001;
+  for (const f of flakes) {
+    f.y += Math.pow(f.d, 1.5) + 0.8;
+    f.x += Math.sin(angle * 2 + f.d) * 0.6;
+    if (f.y > height) {
+      f.y = -10;
+      f.x = Math.random() * width;
+    }
+  }
+}
+
+function animate() {
+  drawSnow();
+  requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener('resize', () => {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+});
+
+// ---- Contrôle luminosité ----
+const brightnessSlider = document.getElementById('brightness');
+brightnessSlider.addEventListener('input', e => {
+  const value = e.target.value;
+  document.body.style.filter = `brightness(${value / 100})`;
+});
+
+// ---- Changement de fond ----
+const backgrounds = [
+  "linear-gradient(180deg, #001829 0%, #00335a 100%)",
+  "linear-gradient(180deg, #2c003e 0%, #512b58 100%)",
+  "linear-gradient(180deg, #003300 0%, #006600 100%)",
+  "linear-gradient(180deg, #420000 0%, #a83232 100%)",
+  "linear-gradient(180deg, #003366 0%, #66ccff 100%)"
+];
+let currentBg = 0;
+
+const moveBtn = document.getElementById('move-btn');
+moveBtn.addEventListener('click', () => {
+  currentBg = (currentBg + 1) % backgrounds.length;
+  document.body.style.background = backgrounds[currentBg];
+});
+
+// ---- Rendre le bouton déplaçable ----
+let isDragging = false;
+let offsetX, offsetY;
+
+moveBtn.addEventListener('mousedown', e => {
+  isDragging = true;
+  offsetX = e.clientX - moveBtn.offsetLeft;
+  offsetY = e.clientY - moveBtn.offsetTop;
+});
+
+window.addEventListener('mousemove', e => {
+  if (isDragging) {
+    moveBtn.style.left = (e.clientX - offsetX) + 'px';
+    moveBtn.style.top = (e.clientY - offsetY) + 'px';
+  }
+});
+
+window.addEventListener('mouseup', () => isDragging = false);
+
+
+const links = document.querySelectorAll('nav a');
+links.forEach(link => {
+  link.addEventListener('click', () => {
+    links.forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

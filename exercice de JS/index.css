@@ -1,0 +1,13 @@
+body
+{
+    color: blue;
+    background-color: gray;
+    
+}
+p{
+    font-family: Arial, Helvetica, sans-serif;
+}
+.change{
+    background: blue;
+    color: white;
+}

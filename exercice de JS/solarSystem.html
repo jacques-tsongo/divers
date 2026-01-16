@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!doctype html>
+    <html lang="fr">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Système solaire — HTML + CSS</title>
+        <style>
+            /* Reset minimal */
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0
+            }
+
+            html,
+            body {
+                height: 100%
+            }
+
+            body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: radial-gradient(ellipse at center, #00111a 30%, #000000 70%);
+                font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+                color: #ddd;
+                overflow: hidden;
+            }
+
+            /* Stage */
+            .space {
+                position: relative;
+                width: min(1100px, 95vw);
+                height: min(700px, 85vh);
+            }
+
+            /* SUN */
+            .sun {
+                position: absolute;
+                inset: 0;
+                margin: auto;
+                width: 100px;
+                height: 100px;
+                border-radius: 50%;
+                background: radial-gradient(circle at 30% 20%, #fff3a6 0%, #ffd04d 20%, #ff8c00 60%, #cc5200 100%);
+                box-shadow: 0 0 60px 20px rgba(255, 160, 0, 0.15), 0 0 120px 40px rgba(255, 140, 0, 0.07) inset;
+                z-index: 10;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 700;
+                color: #222;
+                letter-spacing: 1px;
+            }
+
+            /* Orbit containers - centered on sun */
+            .orbit {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                border-radius: 50%;
+                pointer-events: none;
+            }
+
+            /* visual ring for orbit */
+            .orbit::after {
+                content: '';
+                position: absolute;
+                inset: 0;
+                border-radius: 50%;
+                /* border: 1px solid rgb(255, 255, 255); */
+                transform: translate(-50%, -50%);
+                left: 50%;
+                top: 50%;
+            }
+
+            /* planet base style */
+            .planet {
+                position: absolute;
+                left: 75%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                border-radius: 50%;
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.45);
+                cursor: default;
+                pointer-events: auto;
+            }
+
+            /* tooltip label */
+            .planet[data-name]::after {
+                content: attr(data-name);
+                position: absolute;
+                white-space: nowrap;
+                transform: translate(-50%, -50%);
+                transform: translateX(-50%);
+                font-size: 12px;
+                padding: 4px 8px;
+                border-radius: 6px;
+                background: rgba(0, 0, 0, 0.6);
+                color: #fff;
+                opacity: 0;
+                transition: opacity .15s;
+            }
+
+            .planet:hover::after {
+                opacity: 1
+            }
+
+            /* Animating the orbits (rotation) */
+            .orbit.spin {
+                animation: spin linear infinite
+            }
+
+            /* Different planets sizes, colors and orbit radii + duration */
+            /* Mercury */
+            .o-mercury {
+                width: 300px;
+                height: 300px;
+                margin-left: 0px;
+                margin-top: 0px
+            }
+
+            .o-mercury .planet {
+                width: 12px;
+                height: 12px;
+                background: linear-gradient(180deg, #ebdcdc, #cabcbc);
+                animation: none
+            }
+
+            .o-mercury.spin {
+                animation-duration: 8s
+            }
+
+            /* Venus */
+            .o-venus {
+                width: 400px;
+                height: 400px
+            }
+
+            .o-venus .planet {
+                width: 18px;
+                height: 18px;
+                background: linear-gradient(180deg, #f7d6a0, #c67d3a)
+            }
+
+            .o-venus.spin {
+                animation-duration: 13s
+            }
+
+            /* Earth */
+            .o-earth {
+                width: 500px;
+                height: 500px
+            }
+
+            .o-earth .planet {
+                width: 20px;
+                height: 20px;
+                background: linear-gradient(180deg,#fff, #3a86ff,#1b6ce0,#7ddfd2,#1b6ce0, #1b6ce0,#fff);
+                box-shadow: 0 0 8px rgba(58, 134, 255, 0.35)
+            }
+
+            .o-earth.spin {
+                animation-duration: 20s
+            }
+
+            /* Mars */
+            .o-mars {
+                width: 600px;
+                height: 600px
+            }
+
+            .o-mars .planet {
+                width: 17px;
+                height: 17px;
+                background: linear-gradient(180deg, #ff8a65, #c95a3b)
+            }
+
+            .o-mars.spin {
+                animation-duration: 30s
+            }
+
+            /* Jupiter */
+            .o-jupiter {
+                width: 700px;
+                height: 700px
+            }
+
+            .o-jupiter .planet {
+                width: 36px;
+                height: 36px;
+                background: linear-gradient(180deg,#f1c27d, #b36b2b,#cfcbb8, #f1c27d, #b36b2b);
+                box-shadow: 0 6px 30px rgba(179, 107, 43, 0.25)
+            }
+
+            .o-jupiter.spin {
+                animation-duration: 60s
+            }
+
+            /* Saturn (with ring) */
+            .o-saturn {
+                width: 800px;
+                height: 800px;
+            }
+
+            .o-saturn .planet {
+                width: 30px;
+                height: 30px;
+                background: linear-gradient(180deg, #e9d4a6, #caa56a);
+            }
+
+            .o-saturn .planet::before {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%) rotateZ(20deg);
+                width: 70px;
+                height: 18px;
+                border-radius: 50%;
+                background: linear-gradient(90deg, rgba(200, 150, 100, 0.6), rgba(210, 180, 140, 0.4));
+                filter: blur(.2px);
+                z-index: -1
+            }
+            .o-earth .planet::before {
+                content: '';
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%) rotateZ(20deg);
+                width: 30px;
+                height: 18px;
+                border-radius: 50%;
+                background: linear-gradient(90deg, rgba(114, 168, 187, 0.747), rgba(140, 210, 208, 0.4));
+                filter: blur(.2px);
+                z-index: -1
+            }
+
+            .o-saturn.spin {
+                animation-duration: 95s
+            }
+
+            /* Uranus */
+            .o-uranus {
+                width: 900px;
+                height: 900px
+            }
+
+            .o-uranus .planet {
+                width: 20px;
+                height: 20px;
+                background: linear-gradient(180deg, #b7e7f3, #7ec8d9)
+            }
+
+            .o-uranus.spin {
+                animation-duration: 130s
+            }
+
+            /* Neptune */
+            .o-neptune {
+                width: 1000px;
+                height: 1000px
+            }
+
+            .o-neptune .planet {
+                width: 20px;
+                height: 20px;
+                background: linear-gradient(180deg, #5b9ad6, #164f9a)
+            }
+
+            .o-neptune.spin {
+                animation-duration: 170s
+            }
+
+            /* actual spinning animation definition */
+            @keyframes spinKey {
+                from {
+                    transform: translate(-50%, -50%) rotate(0deg)
+                }
+
+                to {
+                    transform: translate(-50%, -50%) rotate(360deg)
+                }
+            }
+
+            .orbit.spin {
+                animation-name: spinKey
+            }
+
+            /* Make orbits non-blocking on small screens */
+            /* @media (max-width:700px) {
+                .sun {
+                    width: 80px;
+                    height: 80px
+                }
+
+                .o-jupiter {
+                    width: 360px;
+                    height: 360px
+                }
+
+                .o-saturn {
+                    width: 420px;
+                    height: 420px
+                }
+
+                .o-uranus {
+                    display: none
+                }
+
+                .o-neptune {
+                    display: none
+                }
+            } */
+
+            /* Controls panel */
+            .controls {
+                position: absolute;
+                left: 12px;
+                top: 12px;
+                background: rgba(0, 0, 0, 0.45);
+                padding: 8px 10px;
+                border-radius: 8px;
+                font-size: 13px;
+                backdrop-filter: blur(4px)
+            }
+
+            .controls label {
+                display: flex;
+                gap: 8px;
+                align-items: center
+            }
+
+            .controls input[type=range] {
+                width: 120px
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="space" id="space">
+
+            <div class="controls" aria-hidden="false">
+                <label>Vitesse des orbites
+                    <input id="speed" type="range" min="0.2" max="3" step="0.1" value="1">
+                </label>
+            </div>
+
+            <div class="sun" title="Soleil"></div>
+
+            <!-- Mercury -->
+            <div class="orbit o-mercury spin" style="--d:160px">
+                <div class="planet" data-name="Mercure">
+                </div>
+            </div>
+
+            <!-- Venus -->
+            <div class="orbit o-venus spin">
+                <div class="planet" data-name="Vénus"></div>
+            </div>
+
+            <!-- Earth -->
+            <div class="orbit o-earth spin">
+                <div class="planet" data-name="Terre"></div>
+            </div>
+
+            <!-- Mars -->
+            <div class="orbit o-mars spin">
+                <div class="planet" data-name="Mars"></div>
+            </div>
+
+            <!-- Jupiter -->
+            <div class="orbit o-jupiter spin">
+                <div class="planet" data-name="Jupiter">
+                </div>
+            </div>
+
+            <!-- Saturn -->
+            <div class="orbit o-saturn spin">
+                <div class="planet" data-name="Saturne">
+                </div>
+            </div>
+
+            <!-- Uranus -->
+            <div class="orbit o-uranus spin">
+                <div class="planet" data-name="Uranus">
+                </div>
+            </div>
+
+            <!-- Neptune -->
+            <div class="orbit o-neptune spin">
+                <div class="planet" data-name="Neptune">
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            // Control global speed with the range input
+            const range = document.getElementById('speed');
+            range.addEventListener('input', e => {
+                document.querySelectorAll('.orbit.spin').forEach(o => {
+                    const base = parseFloat(getComputedStyle(o).animationDuration) || 1;
+                    // We'll modify animationPlayState by setting inline style animationDuration
+                    const defaultDur = {
+                        'o-mercury': '8s', 'o-venus': '13s', 'o-earth': '20s', 'o-mars': '30s', 'o-jupiter': '60s', 'o-saturn': '95s', 'o-uranus': '130s', 'o-neptune': '170s'
+                    };
+                    for (const cls of o.classList) {
+                        if (defaultDur[cls]) {
+                            const val = parseFloat(defaultDur[cls]);
+                            o.style.animationDuration = (val / e.target.value) + 's'
+                            break
+                        }
+                    }
+                })
+            })
+
+            // Initialize once to apply the slider value
+            range.dispatchEvent(new Event('input'))
+        </script>
+    </body>
+
+    </html>
+
+</body>
+
+</html>
